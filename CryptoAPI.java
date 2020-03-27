@@ -30,6 +30,7 @@ import org.apache.http.util.EntityUtils;
 // Packages to take user input and add parameters to GET request
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.Console;
@@ -38,10 +39,14 @@ import java.io.Console;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+// needed to read in the apiKey which is stored in /lib
+import java.io.File;
+import java.util.Scanner;
+
+
 public class CryptoAPI {
 
-  private String apiKey = "eddcb97b0cad3deba225d666bad93593f760820fdafed92a10c57ed2e901e1fa";
-  private String url = "https://min-api.cryptocompare.com/data/pricehistorical";
+  String url = "https://min-api.cryptocompare.com/data/pricehistorical";
 
   protected Double submitRequest(long ts){
     // submit a request for USD price of Bitcoin at the unix timestamp
@@ -70,10 +75,16 @@ public class CryptoAPI {
 
 
   protected String makeAPICall(String url, List<NameValuePair> parameters)
-      throws URISyntaxException, IOException {
+      throws URISyntaxException, IOException, FileNotFoundException  {
     /*
     This method actually executes the request on a Http client
     */
+
+    Scanner scanner = new Scanner(new File("lib/apiKey.txt"));
+
+    String apiKey = new String(scanner.nextLine());
+
+
     String response_content = "";
 
     URIBuilder query = new URIBuilder(url);

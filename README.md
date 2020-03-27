@@ -16,3 +16,5 @@ The response from servers are in JSON format, so I'm also including a jar for
 parsing json into Java hashmap style objects, json-20190722.jar
 
 https://github.com/stleary/JSON-java
+
+[Here](https://streamable.com/s/z4kfq/brosqa) is a simple video demonstration of compiling and running the code.
