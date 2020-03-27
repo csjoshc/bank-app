@@ -1,5 +1,13 @@
-// New authenticator spawned for each name
+/*
+New authenticator instance is created when attempting to use a name to either log in or
+create a new account. Authenticator tracks this name, as well as the number of previous attempts
+Authenticator contains code for reading and writing data to disk.
 
+The logic for using Authenticator is in the Control, while the implementation is here. For example
+the timing for when to read/write is controlled in Control, while the implementation for those
+steps is here.
+
+*/
 package bankapp;
 import bankapp.*;
 import java.io.File;
@@ -15,10 +23,10 @@ public class Authenticator{
   HashMap<String, String> passes = new HashMap<String, String>();
   HashMap<String, Double> accounts = new HashMap<String, Double>();
 
-  Authenticator(String name)
+  Authenticator(String name, Messages msg)
   {
     this.name = name;
-    this.msg = new Messages();
+    this.msg = msg;
   }
   protected String getName (){
     return this.name;
@@ -42,7 +50,7 @@ public class Authenticator{
         this.accounts.put(parts[0], Double.parseDouble(parts[2]));
       } catch (ArrayIndexOutOfBoundsException | NumberFormatException ex) {
         msg.readFailure(linenum, line);
-        System.out.println(ex);
+        //System.out.println(ex);
         continue;
       }
     }

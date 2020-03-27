@@ -1,9 +1,31 @@
+/*
+
+This class contains for printing out data to console, and for receiving user input from
+the console. The user input is tested during parsing for synctatic validity - e.g. are numbers
+numbers, and dates in a specific format? It does not check whether for example if a withdrawal
+amount is less than or equal to the account balance.
+
+Messages is more a collection of bundled methods since it has no real internal attributes
+
+*/
+
 package bankapp;
 import bankapp.*;
 import java.io.Console;
 import java.lang.Math;
+import java.util.HashMap;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.time.ZoneId;
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
+import java.time.Period;
+
 public class Messages{
   Console con = System.console();
+
   protected void greeting (){
     System.out.println("Welcome to bank app!");
   }
@@ -54,7 +76,7 @@ public class Messages{
   }
 
   protected void defaultAmount(){
-    System.out.println("Invalid amount entered, setting to default of $0.");
+    System.out.println("Invalid amount entered, must be an amount greater than $0.");
   }
 
   protected void readFailure(Integer num, String line){
@@ -128,5 +150,34 @@ public class Messages{
       defaultAmount();
       return 0.0;
     }
+  }
+
+  protected HashMap<String, Object> promptDate(String message){
+    //returns a unix timestamp (s) for an entered date, to be used for submitting API requests
+    DateTimeFormatter format = DateTimeFormatter.ofPattern( "uuuu-M-d" , Locale.US);
+    LocalDate date = null;
+    HashMap<String, Object> dates = new HashMap<String, Object>();
+    while(date == null){
+      try{
+        date = LocalDate.parse(con.readLine("Enter the " + message + " date (YYYY-MM-DD): "), format);
+        dates.put("DateObject", date);
+        dates.put("Timestamp", date.atStartOfDay(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli() / 1000);
+
+      } catch (DateTimeParseException e){
+        System.out.println("Sorry, that was not a valid date. Please try again.");
+      } catch (Exception e){
+        System.out.println(e);
+      }
+    }
+    return dates;
+  }
+
+  protected void printPrice(String descr, double amt, double price, double total){
+    System.out.println("You " + descr + " " + amt + " bitcoin at a price of $" +
+    price + "/BTC for a total of $" + total);
+  }
+  protected void printInvestmentPeriod(Period p){
+    System.out.println("Investment period: " + p.getYears() + " years, " + p.getMonths() +
+                   " months, and " + p.getDays() + " days.");
   }
 }
